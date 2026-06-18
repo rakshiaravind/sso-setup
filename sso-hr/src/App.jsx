@@ -1,0 +1,112 @@
+import { useAuth } from 'react-oidc-context';
+import './index.css';
+
+function Navigation() {
+  return (
+    <nav className="global-nav">
+      <div className="nav-container">
+        <div className="nav-logo">🏢 Acme Corp</div>
+        <div className="nav-links">
+          <a href="http://localhost:5173" className="nav-link">Portal</a>
+          <a href="http://localhost:5174" className="nav-link active">HR Hub</a>
+          <a href="http://localhost:5175" className="nav-link">IT Support</a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function App() {
+  const auth = useAuth();
+
+  if (auth.isLoading) {
+    return (
+      <div className="app-wrapper">
+        <Navigation />
+        <div className="container">
+          <div className="card loading-card">
+            <div className="spinner"></div>
+            <p>Authenticating...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (auth.error) {
+    return (
+      <div className="app-wrapper">
+        <Navigation />
+        <div className="container">
+          <div className="card error-card">
+            <h1>Oops!</h1>
+            <p>Authentication error: {auth.error.message}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (auth.isAuthenticated) {
+    return (
+      <div className="app-wrapper">
+        <Navigation />
+        <div className="container">
+          <div className="card dashboard-card">
+            <div className="dashboard-header">
+              <div className="avatar">
+                {auth.user?.profile.preferred_username?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <div>
+                <h1>HR Hub</h1>
+                <p className="subtitle">Employee Resources & Benefits</p>
+              </div>
+            </div>
+            
+            <div className="content-area">
+              <h3>Quick Actions</h3>
+              <div className="news-item">
+                <strong>Request Time Off</strong>
+                <p>Submit your vacation or sick leave requests here.</p>
+              </div>
+              <div className="news-item">
+                <strong>View Paystubs</strong>
+                <p>Access your recent payroll information and tax documents.</p>
+              </div>
+              <div className="news-item">
+                <strong>Benefits Enrollment</strong>
+                <p>The open enrollment period begins next month.</p>
+              </div>
+            </div>
+
+            <button className="btn logout-btn" onClick={() => auth.removeUser()}>
+              Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-wrapper">
+      <Navigation />
+      <div className="container">
+        <div className="card landing-card">
+          <div className="logo-placeholder">
+            👥
+          </div>
+          <h1>HR Hub</h1>
+          <p className="description">
+            Your centralized portal for human resources, benefits, and payroll.
+          </p>
+          <button className="btn login-btn" onClick={() => void auth.signinRedirect()}>
+            Sign In with SSO
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
