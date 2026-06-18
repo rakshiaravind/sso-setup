@@ -1,15 +1,33 @@
 import { useAuth } from 'react-oidc-context';
 import './index.css';
 
+function Navigation() {
+  return (
+    <nav className="global-nav">
+      <div className="nav-container">
+        <div className="nav-logo">🏢 Acme Corp</div>
+        <div className="nav-links">
+          <a href="http://localhost:5173" className="nav-link active">Portal</a>
+          <a href="http://localhost:5174" className="nav-link">HR Hub</a>
+          <a href="http://localhost:5175" className="nav-link">IT Support</a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 function App() {
   const auth = useAuth();
 
   if (auth.isLoading) {
     return (
-      <div className="container">
-        <div className="card loading-card">
-          <div className="spinner"></div>
-          <p>Authenticating...</p>
+      <div className="app-wrapper">
+        <Navigation />
+        <div className="container">
+          <div className="card loading-card">
+            <div className="spinner"></div>
+            <p>Authenticating...</p>
+          </div>
         </div>
       </div>
     );
@@ -17,10 +35,13 @@ function App() {
 
   if (auth.error) {
     return (
-      <div className="container">
-        <div className="card error-card">
-          <h1>Oops!</h1>
-          <p>Authentication error: {auth.error.message}</p>
+      <div className="app-wrapper">
+        <Navigation />
+        <div className="container">
+          <div className="card error-card">
+            <h1>Oops!</h1>
+            <p>Authentication error: {auth.error.message}</p>
+          </div>
         </div>
       </div>
     );
@@ -28,64 +49,57 @@ function App() {
 
   if (auth.isAuthenticated) {
     return (
-      <div className="container">
-        <div className="card dashboard-card">
-          <div className="dashboard-header">
-            <div className="avatar">
-              {auth.user?.profile.preferred_username?.charAt(0).toUpperCase() || 'U'}
+      <div className="app-wrapper">
+        <Navigation />
+        <div className="container">
+          <div className="card dashboard-card">
+            <div className="dashboard-header">
+              <div className="avatar">
+                {auth.user?.profile.preferred_username?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <div>
+                <h1>Company Portal</h1>
+                <p className="subtitle">Welcome back, {auth.user?.profile.name || auth.user?.profile.preferred_username}!</p>
+              </div>
             </div>
-            <div>
-              <h1>Welcome, {auth.user?.profile.preferred_username}!</h1>
-              <p className="subtitle">You have successfully authenticated via SSO.</p>
+            
+            <div className="content-area">
+              <h3>Company Announcements</h3>
+              <div className="news-item">
+                <strong>Q3 Townhall Meeting</strong>
+                <p>Join us next Friday for the quarterly update. Check the HR Hub for details.</p>
+              </div>
+              <div className="news-item">
+                <strong>New IT Security Policies</strong>
+                <p>Please review the updated security guidelines on the IT Support Desk.</p>
+              </div>
             </div>
-          </div>
-          
-          <div className="profile-details">
-            <div className="detail-item">
-              <span className="label">Name</span>
-              <span className="value">{auth.user?.profile.name || 'N/A'}</span>
-            </div>
-            <div className="detail-item">
-              <span className="label">Email</span>
-              <span className="value">{auth.user?.profile.email || 'N/A'}</span>
-            </div>
-            <div className="detail-item">
-              <span className="label">Subject ID</span>
-              <span className="value">{auth.user?.profile.sub}</span>
-            </div>
-          </div>
 
-          <button className="btn logout-btn" onClick={() => auth.removeUser()}>
-            Log Out
-          </button>
+            <button className="btn logout-btn" onClick={() => auth.removeUser()}>
+              Log Out
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <div className="card landing-card">
-        <div className="logo-placeholder">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="url(#paint0_linear)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 16V12" stroke="url(#paint0_linear)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 8H12.01" stroke="url(#paint0_linear)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <defs>
-              <linearGradient id="paint0_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/>
-                <stop offset="1" stopColor="#ec4899"/>
-              </linearGradient>
-            </defs>
-          </svg>
+    <div className="app-wrapper">
+      <Navigation />
+      <div className="container">
+        <div className="card landing-card">
+          <div className="logo-placeholder">
+            🏢
+          </div>
+          <h1>Company Portal</h1>
+          <p className="description">
+            Your gateway to Acme Corp's internal tools.
+          </p>
+          <button className="btn login-btn" onClick={() => void auth.signinRedirect()}>
+            Sign In with SSO
+          </button>
         </div>
-        <h1>SSO Portal</h1>
-        <p className="description">
-          Experience seamless authentication powered by OpenID Connect and Keycloak.
-        </p>
-        <button className="btn login-btn" onClick={() => void auth.signinRedirect()}>
-          Sign In with SSO
-        </button>
       </div>
     </div>
   );
