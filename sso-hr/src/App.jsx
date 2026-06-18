@@ -34,17 +34,24 @@ function App() {
   }
 
   if (auth.error) {
-    return (
-      <div className="app-wrapper">
-        <Navigation />
-        <div className="container">
-          <div className="card error-card">
-            <h1>Oops!</h1>
-            <p>Authentication error: {auth.error.message}</p>
+    if (auth.error.message === 'Session not active' || auth.error.message === 'login_required' || auth.error.message.includes('Session not active')) {
+      setTimeout(() => { void auth.removeUser(); }, 0);
+    } else {
+      return (
+        <div className="app-wrapper">
+          <Navigation />
+          <div className="container">
+            <div className="card error-card">
+              <h1>Oops!</h1>
+              <p>Authentication error: {auth.error.message}</p>
+              <button className="btn" onClick={() => void auth.removeUser()} style={{marginTop: '16px'}}>
+                Return to Login
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   if (auth.isAuthenticated) {
@@ -79,7 +86,7 @@ function App() {
               </div>
             </div>
 
-            <button className="btn logout-btn" onClick={() => auth.removeUser()}>
+            <button className="btn logout-btn" onClick={() => void auth.signoutRedirect()}>
               Log Out
             </button>
           </div>
