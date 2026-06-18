@@ -1,0 +1,99 @@
+The main difference is **how authentication information is exchanged** and **where the complexity lives**.
+
+### OIDC (OpenID Connect)
+
+* Built on top of **OAuth 2.0**.
+* Uses **JSON**, **JWT tokens**, and REST APIs.
+* Designed for modern web apps, SPAs, mobile apps, and APIs.
+* Can work directly in a frontend application using the **Authorization Code Flow with PKCE**.
+* Easier to integrate with modern identity providers.
+
+**Typical flow**
+
+1. User clicks "Sign In."
+2. Browser redirects to identity provider.
+3. User authenticates.
+4. Identity provider returns an authorization code.
+5. Frontend exchanges the code for tokens (using PKCE).
+6. App uses the ID token to identify the user.
+
+**Advantages**
+
+* Simpler for modern applications.
+* Works well with React, Vue, Angular, Vite, etc.
+* No XML processing.
+* Usually no custom backend required for authentication.
+
+**Best for**
+
+* Single-page applications (SPAs)
+* Mobile apps
+* Modern SaaS products
+
+---
+
+### SAML (Security Assertion Markup Language)
+
+* Older enterprise authentication standard.
+* Uses **XML assertions** instead of JWTs.
+* Authentication responses are digitally signed XML documents.
+* Typically requires a backend service to validate signatures, process assertions, and manage sessions securely.
+
+**Typical flow**
+
+1. User clicks "Sign In."
+2. Browser redirects to identity provider.
+3. User authenticates.
+4. Identity provider sends a signed XML assertion to your application.
+5. Backend validates the assertion.
+6. Backend creates a session and logs the user in.
+
+**Advantages**
+
+* Widely used in large enterprises.
+* Supported by many legacy identity systems.
+* Common for corporate Single Sign-On (SSO).
+
+**Best for**
+
+* Enterprise customers that specifically require SAML SSO.
+* Integrations with older corporate identity providers.
+
+---
+
+### Architecture Comparison
+
+| Feature             | OIDC       | SAML        |
+| ------------------- | ---------- | ----------- |
+| Format              | JSON/JWT   | XML         |
+| Modernity           | Modern     | Older       |
+| SPA-friendly        | Yes        | Not really  |
+| Backend required    | Usually no | Usually yes |
+| Mobile support      | Excellent  | Limited     |
+| Enterprise adoption | High       | Very high   |
+| Complexity          | Lower      | Higher      |
+
+### Which should you choose?
+
+**Choose OIDC if:**
+
+* You control the authentication setup.
+* You're building a modern React/Vite frontend.
+* You want the simplest architecture.
+* Your identity provider supports OIDC (most do).
+
+**Choose SAML if:**
+
+* A customer explicitly says "we need SAML SSO."
+* You're integrating with enterprise identity systems that only expose SAML.
+* You need compatibility with legacy corporate environments.
+
+### For your project
+
+If there is **no specific requirement for SAML**, I would recommend:
+
+* Frontend: Vite + React (or your preferred framework)
+* Authentication: OIDC with Authorization Code Flow + PKCE
+* No custom Express authentication backend required
+
+If the goal is **enterprise SSO for corporate customers**, then an Express backend handling SAML assertions is often the safer approach.
