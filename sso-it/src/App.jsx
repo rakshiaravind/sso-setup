@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import './index.css';
 
@@ -18,6 +19,17 @@ function Navigation() {
 
 function App() {
   const auth = useAuth();
+  const [hasTriedSignin, setHasTriedSignin] = useState(false);
+
+  useEffect(() => {
+    if (!auth.isAuthenticated && !auth.isLoading && !auth.activeNavigator && !hasTriedSignin) {
+      setHasTriedSignin(true);
+      auth.signinSilent().catch(() => {
+        // Silent sign-in failed, meaning user is not logged in on Keycloak
+        // Our existing error handler will gracefully drop them to the login screen
+      });
+    }
+  }, [auth, hasTriedSignin]);
 
   if (auth.isLoading) {
     return (
