@@ -28,6 +28,19 @@ services:
       - openldap
     restart: unless-stopped
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    ports:
+      - "8050:8080"
+    depends_on:
+      - openldap
+    restart: unless-stopped
+
 volumes:
   ldap_data:
   ldap_config:
