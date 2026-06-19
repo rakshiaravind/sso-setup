@@ -2,10 +2,16 @@
 
 This project is a complete, containerized Single Sign-On (SSO) ecosystem. It uses OpenLDAP for central user management, Keycloak as the OIDC Identity Provider, and three separate React/Vite frontends to demonstrate seamless authentication across multiple applications.
 
+
+
 ## Architecture
 
 1. **OpenLDAP**: The backend database storing user accounts.
 2. **phpLDAPadmin**: A web interface available at `http://localhost:8933` to easily manage OpenLDAP users.
+
+username: cn=admin,dc=example,dc=org
+password: admin
+
 3. **Keycloak**: The SSO gateway available at `http://localhost:8050` that authenticates users and issues OIDC tokens.
 4. **Company Portal (`sso-site`)**: React application running on port `5173`.
 5. **HR Hub (`sso-hr`)**: React application running on port `5174`.
